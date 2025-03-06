@@ -1,16 +1,15 @@
-# Llama 3 (8B) Fine-Tuning with Unsloth
+# ACL Propaganda: Fine-Tuning LLMs with Unsloth
 
 ## Project Overview
-This project is focused on fine-tuning the Llama 3 (8B) model using the Unsloth library. It provides scripts and configurations for training and inference, allowing users to customize and deploy the model on their datasets.
+This project is focused on fine-tuning LLMs using the Unsloth library. 
 
 ## Folder Structure
 ```
 Project_Folder
 │── data/                     # Store datasets and preprocessed data
-│   │── raw/                     # Raw datasets before processing
-│   │── processed/                # Processed datasets
-│── notebooks/                 # Jupyter notebooks for experiments
-│   │── llama3_training.ipynb     # The original or cleaned-up notebook
+│   │── prepare_data.md        # Guide user to prepare data
+│── notebooks/                 # Jupyter notebooks from Unsloth for experiments
+│   │── llama3_training.ipynb 
 │── src/                       # Source code for training and inference
 │   │── train.py                  # Training script
 │   │── inference.py              # Inference script
@@ -20,8 +19,8 @@ Project_Folder
 │   │── final_model/              # Final trained model
 │── configs/                   # Configuration files for model training
 │   │── config.yaml               # YAML file with hyperparameters
-│── scripts/                   # Helper scripts
-│   │── setup_env.sh              # Script to set up dependencies
+│── helper_scripts/                   # Helper scripts
+│   │── setup_env.sh              # Set up dependencies
 │── logs/                      # Training and evaluation logs
 │── requirements.txt           # List of dependencies for the project
 │── README.md                  # Project documentation and instructions
@@ -50,9 +49,3 @@ Project_Folder
   ```bash
   python main.py --mode inference --config configs/config.yaml
   ```
-
-## Contributing
-Contributions are welcome! Please fork the repository and submit a pull request for any improvements or bug fixes.
-
-## License
-This project is licensed under the MIT License. See the LICENSE file for details.
