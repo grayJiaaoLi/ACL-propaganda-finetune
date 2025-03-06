@@ -1,0 +1,22 @@
+# Requirements for Llama 3 (8B) training with Unsloth
+torch>=2.0.0
+transformers>=4.34.0
+datasets>=2.14.0
+accelerate>=0.23.0
+peft>=0.5.0
+bitsandbytes>=0.41.0
+unsloth>=0.3.0
+trl>=0.7.1
+wandb>=0.15.10
+pyyaml>=6.0
+numpy>=1.24.0
+pandas>=2.0.0
+scikit-learn>=1.2.0
+tqdm>=4.65.0
+matplotlib>=3.7.0
+tensorboard>=2.13.0
+sentencepiece>=0.1.99
+protobuf>=4.23.0
+einops>=0.6.1
+flash-attn>=2.3.0
+safetensors>=0.3.3 

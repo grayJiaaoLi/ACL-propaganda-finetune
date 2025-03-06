@@ -1,0 +1,45 @@
+# config.yaml - Configuration file for Llama 3 (8B) training with Unsloth
+# This file contains all hyperparameters and settings for model training and inference
+
+# Model configuration
+model:
+  name: "meta-llama/Llama-3-8B"  # Model identifier
+  max_length: 2048               # Maximum sequence length
+  lora_rank: 16                  # LoRA rank for parameter-efficient fine-tuning
+  lora_alpha: 32                 # LoRA alpha parameter
+  lora_dropout: 0.05             # Dropout rate for LoRA layers
+
+# Training configuration
+training:
+  batch_size: 4                  # Batch size for training
+  gradient_accumulation_steps: 4 # Number of steps for gradient accumulation
+  learning_rate: 2.0e-5          # Learning rate
+  epochs: 3                      # Number of training epochs
+  warmup_steps: 100              # Number of warmup steps
+  weight_decay: 0.01             # Weight decay for regularization
+  optimizer: "adamw_8bit"        # Optimizer type
+  lr_scheduler: "cosine"         # Learning rate scheduler
+  save_steps: 500                # Save checkpoint every N steps
+  eval_steps: 500                # Evaluate every N steps
+
+# Data configuration
+data:
+  train_path: "data/processed/train.jsonl"  # Path to training data
+  eval_path: "data/processed/eval.jsonl"    # Path to evaluation data
+  preprocessing:
+    max_length: 2048             # Maximum sequence length after tokenization
+    add_eos_token: true          # Whether to add EOS token
+
+# Inference configuration
+inference:
+  temperature: 0.7               # Sampling temperature
+  top_p: 0.9                     # Top-p sampling parameter
+  top_k: 50                      # Top-k sampling parameter
+  max_new_tokens: 512            # Maximum number of tokens to generate
+  repetition_penalty: 1.1        # Penalty for token repetition
+
+# Logging and output
+output:
+  checkpoint_dir: "models/checkpoints"  # Directory to save checkpoints
+  final_model_dir: "models/final_model" # Directory to save the final model
+  log_dir: "logs"                       # Directory for logs 
