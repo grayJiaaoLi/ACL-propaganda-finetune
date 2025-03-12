@@ -3,29 +3,49 @@
 
 # Model configuration
 model:
-  name: "meta-llama/Llama-3-8B"  # Model identifier
+  name: "unsloth/Meta-Llama-3.1-8B"  # Model identifier
   max_length: 2048               # Maximum sequence length
+  load_in_4bit: true             # Whether to use 4-bit quantization
   lora_rank: 16                  # LoRA rank for parameter-efficient fine-tuning
-  lora_alpha: 32                 # LoRA alpha parameter
-  lora_dropout: 0.05             # Dropout rate for LoRA layers
+  lora_alpha: 16                 # LoRA alpha parameter
+  lora_dropout: 0                # Dropout rate for LoRA layers
+  use_gradient_checkpointing: true # Whether to use gradient checkpointing
+  use_rslora: false              # Whether to use rank-stabilized LoRA
+  # hf_token: null               # Hugging Face token for accessing gated models
 
 # Training configuration
 training:
-  batch_size: 4                  # Batch size for training
+  batch_size: 2                  # Batch size for training
   gradient_accumulation_steps: 4 # Number of steps for gradient accumulation
-  learning_rate: 2.0e-5          # Learning rate
+  learning_rate: 2.0e-4          # Learning rate
   epochs: 3                      # Number of training epochs
-  warmup_steps: 100              # Number of warmup steps
+  max_steps: 60                  # Maximum number of training steps (overrides epochs if set)
+  warmup_steps: 10               # Number of warmup steps
   weight_decay: 0.01             # Weight decay for regularization
   optimizer: "adamw_8bit"        # Optimizer type
-  lr_scheduler: "cosine"         # Learning rate scheduler
-  save_steps: 500                # Save checkpoint every N steps
-  eval_steps: 500                # Evaluate every N steps
+  lr_scheduler: "linear"         # Learning rate scheduler
+  save_steps: 20                 # Save checkpoint every N steps
+  eval_steps: 20                 # Evaluate every N steps
+  logging_steps: 1               # Log metrics every N steps
+  packing: false                 # Whether to use packing for efficient training
 
 # Data configuration
 data:
-  train_path: "data/processed/train.jsonl"  # Path to training data
-  eval_path: "data/processed/eval.jsonl"    # Path to evaluation data
+  dataset_type: "propaganda_labeled"  # Type of dataset to use (propaganda, propaganda_labeled)
+  train_path: "data/trainset/trainset_propaganda_with_explanation.jsonl"  # Path to training data
+  eval_path: null                # Path to evaluation data (null for no evaluation)
+  
+  # Raw data processing (for preparing datasets from raw sources)
+  process_raw: false            # Whether to process raw data before training
+  raw_data_path: "data/raw_data/df_tweets_HiQualProp.csv"  # Path to raw data
+  output_dir: "data/processed"  # Directory to save processed data
+  
+  # Format alignment options
+  align_formats: false          # Whether to align existing JSONL files to a consistent format
+  source_paths:                 # Paths to source JSONL files to align
+    - "data/trainset/trainset_propaganda.jsonl"
+    - "data/trainset/trainset_propaganda_with_explanation.jsonl"
+  
   preprocessing:
     max_length: 2048             # Maximum sequence length after tokenization
     add_eos_token: true          # Whether to add EOS token
@@ -37,9 +57,19 @@ inference:
   top_k: 50                      # Top-k sampling parameter
   max_new_tokens: 512            # Maximum number of tokens to generate
   repetition_penalty: 1.1        # Penalty for token repetition
+  do_sample: true                # Whether to use sampling for generation
+  seed: 36                       # Random seed for reproducibility
+  prompt_template: "alpaca"      # Template to use for formatting prompts
 
 # Logging and output
 output:
   checkpoint_dir: "models/checkpoints"  # Directory to save checkpoints
   final_model_dir: "models/final_model" # Directory to save the final model
-  log_dir: "logs"                       # Directory for logs 
+  log_dir: "logs"                       # Directory for logs
+  save_method: "lora"                   # How to save the model ("lora", "merged_16bit", "merged_4bit")
+  export_formats:                       # Additional export formats
+    gguf: false                         # Whether to export to GGUF format
+    gguf_quantization: "q4_k_m"         # GGUF quantization method
+    push_to_hub: false                  # Whether to push to Hugging Face Hub
+    hub_model_id: null                  # Hugging Face Hub model ID
+    hub_private: true                   # Whether the Hub repository should be private 
