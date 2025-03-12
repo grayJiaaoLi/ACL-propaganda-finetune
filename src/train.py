@@ -19,7 +19,7 @@ from unsloth import FastLanguageModel, is_bfloat16_supported
 from trl import SFTTrainer
 from transformers import TrainingArguments
 import time
-from src.data_loader import load_data
+from src.data_loader import prepare_training_dataset
 
 def initialize_model(config):
     """
@@ -278,9 +278,14 @@ def train_model(config_path):
     model, tokenizer = initialize_model(config)
     
     # 2: Load and prepare dataset
-    datasets = load_data(config_path, tokenizer)
-    train_dataset = datasets['train']
-    eval_dataset = datasets['eval']
+    data_path = config.get("data", {}).get("train_path", "../data/trainset_with_claims.jsonl")
+    train_dataset = prepare_training_dataset(tokenizer, data_path)
+    
+    # Check if there's a separate evaluation dataset
+    eval_path = config.get("data", {}).get("eval_path", None)
+    eval_dataset = prepare_training_dataset(tokenizer, eval_path) if eval_path else None
+    
+    datasets = {'train': train_dataset, 'eval': eval_dataset}
 
     # If eval_dataset is not provided, split train_dataset
     if eval_dataset is None and config.get("training", {}).get("use_validation", True):
